@@ -1,0 +1,293 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+input,
+button,
+textarea,
+select {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ===== Leaflet base ===== */
+.leaflet-container {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #e5e7eb;
+}
+
+.dark .leaflet-container {
+  background: #0f172a;
+}
+
+/* Dark mode map tiles — softened for readability (roads/street names stay clear) */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.95) saturate(0.85);
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.8) !important;
+  color: #94a3b8 !important;
+  font-size: 9px !important;
+  border-radius: 4px 0 0 0;
+  padding: 1px 5px !important;
+}
+
+.dark .leaflet-control-attribution {
+  background: rgba(15, 23, 42, 0.8) !important;
+  color: #94a3b8 !important;
+}
+
+.dark .leaflet-control-attribution a {
+  color: #cbd5e1 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  padding: 4px;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: #1e293b;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.leaflet-popup-content {
+  margin: 8px 10px;
+}
+
+.dark .leaflet-popup-content {
+  color: #e2e8f0;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dark .leaflet-popup-tip {
+  background: #1e293b;
+}
+
+/* ===== Custom markers (2GIS style — clean circular pins) ===== */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.map-marker-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.map-marker-wrap:hover {
+  transform: scale(1.18) translateY(-2px);
+  z-index: 10000;
+}
+
+.map-marker-pin {
+  background: var(--mc);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid white;
+  box-shadow: 0 2px 8px var(--mg), 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.dark .map-marker-pin {
+  border-color: #1e293b;
+  box-shadow: 0 2px 8px var(--mg), 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.map-marker-pin.detailed {
+  border-width: 3px;
+  box-shadow: 0 4px 16px var(--mg), 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.map-marker-wrap:hover .map-marker-pin {
+  border-color: white;
+  box-shadow: 0 6px 24px var(--mg), 0 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+.dark .map-marker-wrap:hover .map-marker-pin {
+  border-color: #1e293b;
+}
+
+/* ===== Refined marker labels (clean text, no background) ===== */
+.map-marker-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 4px;
+  margin-top: 3px;
+  pointer-events: none;
+  background: transparent;
+  color: #1e293b;
+  border: none;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.85), 0 0 4px rgba(255, 255, 255, 0.6);
+  transition: opacity 0.2s ease;
+}
+
+.dark .map-marker-label {
+  background: transparent;
+  color: #f1f5f9;
+  border: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Labels hidden by default at low zoom; shown at zoom>=15 or on hover */
+.map-marker-label.hidden-label {
+  opacity: 0;
+}
+
+.map-marker-wrap:hover .map-marker-label {
+  opacity: 1;
+}
+
+/* ===== User location dot (2GIS style pulsing blue) ===== */
+.user-location-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.user-location-wrap {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.user-location-halo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.25);
+  animation: userPulse 2s ease-in-out infinite;
+}
+
+.user-location-dot {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 2.5px solid white;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.5);
+}
+
+.dark .user-location-dot {
+  border-color: #e2e8f0;
+}
+
+@keyframes userPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ===== Navigation route line ===== */
+.nav-route-line {
+  animation: dashFlow 1s linear infinite;
+}
+
+/* ===== Building flat outline styles ===== */
+.building-flat-outline {
+  transition: opacity 0.3s ease;
+}
+
+.building-flat-outline:hover {
+  fillOpacity: 0.15;
+  weight: 2;
+}
+
+.building-zone-popup .leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Distance line animation ===== */
+.distance-line {
+  animation: dashFlow 1s linear infinite;
+}
+
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ===== Scrollbar ===== */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 5px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Leaflet zoom smoothness */
+.leaflet-zoom-anim .leaflet-zoom-animated {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.leaflet-popup-content-wrapper {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Theme transition */
+.theme-transition,
+.theme-transition * {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
