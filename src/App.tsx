@@ -15,7 +15,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Внутренний компонент для принудительного обновления размера карты
+// Внутренний компонент для принудительного обновления размера карты и удаления серых квадратов
 const MapRef: React.FC = () => {
   const map = useMap();
 
@@ -23,7 +23,7 @@ const MapRef: React.FC = () => {
     // Небольшая задержка нужна, чтобы контейнер успел получить финальные размеры
     const timer = setTimeout(() => {
       map.invalidateSize();
-    }, 200);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, [map]);
@@ -69,17 +69,20 @@ const App: React.FC = () => {
 
   return (
     <div className="w-full h-screen relative bg-slate-900 text-white">
-      {/* Глобальные стили для исправления багов Leaflet */}
+      {/* Глобальные стили для исправления багов Leaflet и серых квадратов */}
       <style>{`
-        /* Убираем баги сетки и "серых квадратов" Leaflet */
+        /* Запрещаем Tailwind сжимать и разрывать тайлы Leaflet */
         .leaflet-container img {
           max-width: none !important;
           max-height: none !important;
           width: auto !important;
           height: auto !important;
+          display: inline !important;
         }
         .leaflet-container {
-          background: #e5e7eb !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          background: #f2efe9 !important; /* Фоновый цвет тайлов CartoDB Voyager вместо серого */
           font-family: inherit;
         }
         .leaflet-tile {
